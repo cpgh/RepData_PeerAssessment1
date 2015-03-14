@@ -18,9 +18,8 @@ Each section below has a breif note, followed by the code and then the results o
 
 
 Load required libraries
-```{r, echo=TRUE}
 
-
+```r
 library(plyr)
 library(dplyr)
 library(reshape)
@@ -31,6 +30,13 @@ library(rmarkdown)
 library(knitr)
 library(Hmisc)
 library(timeDate)
+```
+
+```
+## Warning: package 'timeDate' was built under R version 3.1.3
+```
+
+```r
 library(lattice)
 
 
@@ -45,15 +51,13 @@ require(knitr)
 require(Hmisc)
 require(timeDate)
 require(lattice)
-
-
 ```
 
 
 
 ## Loading and preprocessing the data
-```{r, echo=TRUE}
 
+```r
 ## read activity data into a df
 
 mydata <- read.csv("activity.csv")
@@ -68,14 +72,12 @@ mydata.1.mean <- aggregate(mydata.1[ ,1],
                                      by = mydata.1[c("date")], FUN=mean)
 
 colnames(mydata.1.mean)[2] <- "steps"
-
 ```
 
 
 ## What is mean total number of steps taken per day?
-```{r, echo=TRUE}
 
-
+```r
 ## create df with out NA values
 mydata.1 <-mydata[complete.cases(mydata), ]
 
@@ -85,27 +87,26 @@ mydata.1.mean <- aggregate(mydata.1[ ,1],
                                      by = mydata.1[c("date")], FUN=mean)
 
 colnames(mydata.1.mean)[2] <- "steps"
-
 ```
 
 
 ### Create histrogram of mean number of steps/day:
 
-```{r, echo=TRUE}
 
+```r
 ## generate histogram
 
 hist(mydata.1.mean[,2], col="orange", main="Histogram of Personal Activity Data",
           xlab = "Mean Number of Steps")
-
 ```
+
+![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png) 
 
 
 ### Calculate and report mean and median number of steps taken per day
 
-```{r, echo=TRUE}
 
-
+```r
 ## subset df to eliminate zero values
 df.nonzero <- subset(mydata.1, steps > 0)
 
@@ -115,8 +116,11 @@ median <- median(df.nonzero[,1])
 df.avg <- data.frame(mean, median)
 
 print(df.avg, row.names=FALSE)
+```
 
-
+```
+##      mean median
+##  134.2607     56
 ```
 
 
@@ -127,10 +131,8 @@ print(df.avg, row.names=FALSE)
 ### Plot average number of steps at each 5-minute interval across all the days.
 
 
-```{r, echo=TRUE}
 
-
-
+```r
 ## Create df with ave steps per interval, and clean up col names.
 mydata.3.mean <- aggregate(mydata.1[ ,1], 
                            by = mydata.1[c("interval")], FUN=mean)
@@ -140,26 +142,25 @@ colnames(mydata.3.mean)[2] <- "steps"
 plot(steps ~ interval, mydata.3.mean, xaxt = "n", type = "l", col="blue", main="Mean Steps/Interval")
 axis(1, mydata.3.mean$interval, cex.axis = .7, col="blue")
 abline(h = mean(mydata.3.mean$steps))
-
-
-
 ```
+
+![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png) 
 
 
 ### Report on the specific interval that has the highest number of steps
 
 
-```{r, echo=TRUE}
 
-
-
+```r
 ## Create df with ave steps per interval, and clean up col names.
 
 
 print(subset(mydata.3.mean, steps == max(mydata.3.mean$steps)), row.names=FALSE)
+```
 
-
-
+```
+##  interval    steps
+##       835 206.1698
 ```
 
 
@@ -168,16 +169,16 @@ print(subset(mydata.3.mean, steps == max(mydata.3.mean$steps)), row.names=FALSE)
 
 ### Report on number of missing values
 
-```{r, echo=TRUE}
 
-
-
+```r
 ## Calculate number of missing values in the dataset
 
 
 cat(nrow(mydata) - sum(complete.cases(mydata)))
+```
 
-
+```
+## 2304
 ```
 
 
@@ -187,9 +188,8 @@ cat(nrow(mydata) - sum(complete.cases(mydata)))
 Note:  The methodology used was to calculate an average number of steps based on the non-na values avaialble for each interval per day, i.e., average of each interval allocated to NA values.  The calculated mean for each interval was rounded to integer value to represent whole steps only.
 
 
-```{r, echo=TRUE}
 
-
+```r
 #  create df copy from original
 mydata.impute <- mydata
 
@@ -233,10 +233,9 @@ colnames(df.impute.mean)[2] <- "steps"
 
 hist(df.impute.mean[,2], col="palevioletred3", main="Histogram of Personal Activity Data - Imputted",
      xlab = "Mean Number of Steps")
-
-
-
 ```
+
+![plot of chunk unnamed-chunk-9](figure/unnamed-chunk-9-1.png) 
 
 The values per the above histogram differ from the original data-set.  There is a much greater number of days where the steps are close to the mean value.
 
@@ -245,17 +244,37 @@ The impact of imputting these values is that although the mean, max, and min val
 
 SUMMARY OF ORIGINAL DATA COMPARED TO SUMMARY OF IMPUTTED DATA
 
-```{r, echo=TRUE}
 
-
-
+```r
 ## Calculate number of missing values in the dataset
 
 print(summary(mydata))
+```
+
+```
+##      steps                date          interval     
+##  Min.   :  0.00   2012-10-01:  288   Min.   :   0.0  
+##  1st Qu.:  0.00   2012-10-02:  288   1st Qu.: 588.8  
+##  Median :  0.00   2012-10-03:  288   Median :1177.5  
+##  Mean   : 37.38   2012-10-04:  288   Mean   :1177.5  
+##  3rd Qu.: 12.00   2012-10-05:  288   3rd Qu.:1766.2  
+##  Max.   :806.00   2012-10-06:  288   Max.   :2355.0  
+##  NA's   :2304     (Other)   :15840
+```
+
+```r
 print(summary(df.impute))
+```
 
-
-
+```
+##      steps                date          interval     
+##  Min.   :  0.00   2012-10-01:  288   Min.   :   0.0  
+##  1st Qu.:  0.00   2012-10-02:  288   1st Qu.: 588.8  
+##  Median :  0.00   2012-10-03:  288   Median :1177.5  
+##  Mean   : 37.38   2012-10-04:  288   Mean   :1177.5  
+##  3rd Qu.: 27.00   2012-10-05:  288   3rd Qu.:1766.2  
+##  Max.   :806.00   2012-10-06:  288   Max.   :2355.0  
+##                   (Other)   :15840
 ```
 
 
@@ -264,10 +283,8 @@ print(summary(df.impute))
 
 Yes there are...as can be seen below, the is considerably more activity as measured by number of setps and frequency.
 
-```{r, echo=TRUE}
 
-
-
+```r
 ## SEGREGATE DATA BETWEEN WEEKDAYS and WEEKENDS
 
 df.impute.days <- df.impute
@@ -305,7 +322,7 @@ panels <- xyplot(steps ~ interval | dayflag, data = df.impute.days.mean, layout 
 
 
 print(panels)
-
-
 ```
+
+![plot of chunk unnamed-chunk-11](figure/unnamed-chunk-11-1.png) 
 
